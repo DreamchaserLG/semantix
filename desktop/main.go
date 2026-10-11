@@ -228,6 +228,7 @@ func main() {
 // still pass. Fields are accepted and ignored so migration never crashes on
 // unknown product switches.
 type desktopLaunchOptions struct {
+	OpenAccount bool
 	// LegacySafeModeArg is true when --safe-mode was present. v1.20+ ignores it.
 	LegacySafeModeArg bool
 	// RemoteWindowTicket is the one-shot ticket name for an SSH remote web
@@ -247,6 +248,8 @@ func parseDesktopLaunchArgs(args []string) desktopLaunchOptions {
 	var out desktopLaunchOptions
 	for _, arg := range args {
 		switch {
+		case arg == "--account":
+			out.OpenAccount = true
 		case arg == "--safe-mode" || arg == "-safe-mode":
 			out.LegacySafeModeArg = true
 		case arg == "launch" || arg == "--detach":

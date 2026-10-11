@@ -32,6 +32,7 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
+	"semantix/desktop/account"
 	"semantix/harness/agent"
 	"semantix/harness/billing"
 	"semantix/harness/boot"
@@ -126,6 +127,8 @@ type PromptHistoryResult struct {
 // flow the other way: each tab's controller emits to a tabEventSink that
 // forwards events tagged with tabId to the webview via runtime.EventsEmit.
 type App struct {
+	accountOnce  sync.Once
+	account      *account.Client
 	ctx          context.Context
 	workspaceHub *workspaceChangeHub
 

@@ -20,6 +20,7 @@ require (
 	github.com/tc-hib/winres v0.3.1
 	github.com/wailsapp/go-webview2 v1.0.23
 	github.com/wailsapp/wails/v2 v2.13.0
+	github.com/zalando/go-keyring v0.2.8
 	golang.org/x/image v0.44.0
 	golang.org/x/mod v0.38.0
 	golang.org/x/sync v0.22.0
@@ -74,7 +75,6 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	github.com/yuin/goldmark v1.8.5 // indirect
-	github.com/zalando/go-keyring v0.2.8 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
