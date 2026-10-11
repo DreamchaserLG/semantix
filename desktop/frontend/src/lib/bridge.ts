@@ -14,6 +14,9 @@ import { DEFAULT_STATUS_BAR_ITEMS, normalizeStatusBarItems } from "./statusBarIt
 import { modeHasAutoApproveTools, modeWithAutoApproveTools, modeWithPlan, normalizeCollaborationMode, normalizeMode, normalizeTokenMode, normalizeToolApprovalMode } from "./types";
 import { decisionSurfaceMockFromInput, isLongDecisionOptionsMockInput } from "./decisionSurfaceMock";
 import type {
+  AccountView,
+  AccountRegistrationOptions,
+  AccountRegistrationResult,
   RemoteHostView,
   RemoteHostInput,
   RemoteConnectionStatus,
@@ -157,6 +160,13 @@ interface DesktopWindowState {
 // but missing from AppBindings causes a type error here. Fix: add the new method
 // to AppBindings, then run `pnpm typecheck` to verify.
 export interface AppBindings extends SessionCatalogBindings, HistoryCatalogBindings, TaskCatalogBindings {
+  AccountStatus(): Promise<AccountView>;
+  AccountLogin(username: string, password: string): Promise<AccountView>;
+  AccountVerify(code: string): Promise<AccountView>;
+  AccountLogout(): Promise<AccountView>;
+  AccountRegistrationOptions(): Promise<AccountRegistrationOptions>;
+  AccountRegister(username: string, password: string, email: string, code: string, agreed: boolean): Promise<AccountRegistrationResult>;
+  AccountSendRegistrationCode(email: string): Promise<AccountRegistrationResult>;
   Platform(): Promise<string>;
   MinimiseMainWindow(): Promise<void>;
   ToggleMaximiseMainWindow(): Promise<void>;
@@ -4317,6 +4327,13 @@ function makeMockApp(): AppBindings {
         conversationWidth,
       })) as DesktopStartupSettingsView;
     },
+    async AccountStatus() { return { state: "signed_out" as const, siteURL: "https://sem.ensureok.ai", stale: false, remembered: false, hasSession: false, warningCodes: ["preview"] }; },
+    async AccountLogin() { return { ...await this.AccountStatus(), errorCode: "preview" }; },
+    async AccountVerify() { return { ...await this.AccountStatus(), errorCode: "preview" }; },
+    async AccountLogout() { return this.AccountStatus(); },
+    async AccountRegistrationOptions() { return { enabled: false, emailVerification: false, userAgreement: false, privacyPolicy: false, websiteRequired: false, errorCode: "preview" }; },
+    async AccountRegister() { return { success: false, errorCode: "preview" }; },
+    async AccountSendRegistrationCode() { return { success: false, errorCode: "preview" }; },
     async Settings() { return JSON.parse(JSON.stringify(settings)) as SettingsView; },
     async StorageSettings() { return { defaultWorkspace: cwd, statePath: `${cwd}/.semantix`, cachePath: `${cwd}/.semantix/cache`, extensionsPath: `${cwd}/.semantix/plugins` }; },
     async HooksSettings(scope: string) {

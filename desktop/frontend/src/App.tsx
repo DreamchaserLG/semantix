@@ -1108,6 +1108,7 @@ export default function App() {
   const [providerSetupNeeded, setProviderSetupNeeded] = useState(false);
   const settingsTarget = useOverlayStore((s) => s.settingsTarget);
   const setSettingsTarget = useOverlayStore((s) => s.setSettingsTarget);
+  const accountLaunchHandled = useRef(false);
   const settingsFocus = useOverlayStore((s) => s.settingsFocus);
   const setSettingsFocus = useOverlayStore((s) => s.setSettingsFocus);
   const [desktopLayoutStyle, setDesktopLayoutStyle] = useState<DesktopLayoutStyle>("workbench");
@@ -1448,6 +1449,10 @@ export default function App() {
       ]);
       if (cancelled) return;
       applyDesktopPreferences(settings);
+      if (settings.openAccount && !accountLaunchHandled.current) {
+        accountLaunchHandled.current = true;
+        setSettingsTarget("account");
+      }
       applyConfigWarningSnapshot(settings.configWarnings, settings.configWarningsRevision);
       hydrateDisplayMode(settings.displayMode);
       setSidebarImConnections(sidebarImConnectionsFromBot(settings.bot, t, runtimeStatus));
@@ -1492,9 +1497,9 @@ export default function App() {
   // Open settings when the native menu item (CmdOrCtrl+,) is activated.
   useEffect(() => {
     if (typeof window === "undefined" || !window.runtime) return;
-    return window.runtime.EventsOn("app:open-settings", () => {
+    return window.runtime.EventsOn("app:open-settings", (tab?: unknown) => {
       closeTransientOverlays();
-      setSettingsTarget("general");
+      setSettingsTarget(tab === "account" ? "account" : "general");
     });
   }, [closeTransientOverlays]);
   useEffect(() => {
@@ -4947,7 +4952,7 @@ export default function App() {
         <StartupSplash hold={startupSplashHold} onDone={() => setStartupSplashVisible(false)} />
       )}
 
-      {needsOnboarding && (
+      {needsOnboarding && settingsTarget !== "account" && (
         <OnboardingOverlay
           onComplete={() => {
             setProviderSetupNeeded(false);

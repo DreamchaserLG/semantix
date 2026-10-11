@@ -1433,7 +1433,29 @@ export interface MemoryView {
 }
 
 // SettingsTab is the top-level navigation item in the Settings Centre modal.
-export type SettingsTab = "general" | "models" | "providers" | "bots" | "mcp" | "remote" | "skills" | "subagents" | "plugins" | "memory" | "hooks" | "diagnostics" | "shortcuts" | "permissions" | "sandbox" | "network" | "appearance" | "storage" | "updates";
+export type SettingsTab = "account" | "general" | "models" | "providers" | "bots" | "mcp" | "remote" | "skills" | "subagents" | "plugins" | "memory" | "hooks" | "diagnostics" | "shortcuts" | "permissions" | "sandbox" | "network" | "appearance" | "storage" | "updates";
+
+export interface AccountRegistrationOptions {
+  enabled: boolean;
+  emailVerification: boolean;
+  userAgreement: boolean;
+  privacyPolicy: boolean;
+  websiteRequired: boolean;
+  errorCode?: string;
+}
+export interface AccountRegistrationResult { success: boolean; errorCode?: string }
+
+export interface AccountView {
+  state: "signed_out" | "verifying" | "signed_in";
+  siteURL: string;
+  user?: { id: string; username: string; displayName: string; group: string; credits: string; usedCredits: string; billingTokens: string; requestCount: string };
+  syncedAt?: string;
+  stale: boolean;
+  remembered: boolean;
+  hasSession: boolean;
+  errorCode?: string;
+  warningCodes: string[];
+}
 
 // ── Remote SSH module (mirrors desktop/remote_app.go view structs) ──
 
@@ -2151,6 +2173,7 @@ export interface SettingsView {
 }
 
 export interface DesktopStartupSettingsView {
+  openAccount?: boolean;
   bot: BotSettingsView;
   desktopLanguage: string; // "" | "en" | "zh"; empty = auto
   desktopLayoutStyle: string; // "classic" | "workbench"
