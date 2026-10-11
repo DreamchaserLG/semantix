@@ -2,6 +2,7 @@ import "./lib/compat";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { AccountEntry } from "./components/AccountEntry";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalCrashHandlers, installPerformancePressureMonitor } from "./lib/crash";
 import { installWailsNonFileDragErrorSuppression } from "./lib/bridge";
@@ -114,7 +115,7 @@ async function mountApp() {
       <ErrorBoundary>
         <LocaleProvider>
           <ToastProvider>
-            <App />
+            <AccountEntry><App /></AccountEntry>
           </ToastProvider>
         </LocaleProvider>
       </ErrorBoundary>

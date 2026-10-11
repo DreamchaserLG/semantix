@@ -63,6 +63,49 @@ In a plain browser the native bindings are absent, so `bridge.ts` falls back to 
 exact same event contract — so layout, streaming, markdown, tool cards, and the
 diff seam can all be built without rebuilding Go.
 
+## Account sign-in and credits
+
+Normal launch shows **Sign in / Create account** before mounting the workspace.
+A verified saved session enters automatically; signing out returns to this screen.
+**Settings → Account & credits** keeps balance, refresh and sign-out available.
+The desktop connects to the Semantix New API service at
+`https://sem.ensureok.ai`. Password and available two-factor verification are
+supported. The Go backend holds access tokens in memory and stores refresh
+sessions in the operating system credential vault; passwords are never saved.
+If the vault is unavailable, the UI explains that sign-in is memory-only.
+
+Available/used credits come from the account service: **1 credit = 5,000 billing
+tokens (New API quota units)**. Model and group rates apply; billing tokens are
+not raw model tokens. Balances use exact decimal strings (up to four decimal
+places), including negative balances. This conversion is internal and is not
+displayed on account screens. Registration uses the existing New API user API,
+including server-controlled email verification, agreements and registration
+availability. Unsupported challenges are completed on the account website.
+Registration success returns to sign-in; it does not create a local session.
+Credit allocation and billing remain in the New API admin console. Refresh
+reads the server again; expired sessions and failed synchronization are shown
+explicitly. Sign-out clears local credentials and requests server revocation.
+
+This account connection does not issue inference API keys or change existing
+model configuration. Configure model access under Models until the later
+per-account inference integration is implemented. The browser-only dev mock
+shows a preview notice and cannot perform real sign-in.
+
+This feature is developed from the official v0.8.0 tag on `codex/account-v080`.
+Launch `semantix-v0.8.0-account-preview.exe` normally to review sign-in/register.
+The optional `--account` flag opens account settings after authentication.
+The desktop connects to the server's database through its authenticated New API
+endpoints, reusing the existing users and user_sessions tables. Database
+credentials stay on the server; no separate local account database is created.
+
+See [the account SPEC](../docs/specs/desktop-account-credits.md). Focused checks:
+
+```sh
+go test ./account
+go vet ./account
+cd frontend && pnpm test:account && pnpm typecheck
+```
+
 ## Test
 
 The desktop package is a nested Go module, so parent `go test ./...` does not run

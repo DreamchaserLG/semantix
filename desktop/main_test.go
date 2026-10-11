@@ -18,6 +18,9 @@ func TestParseDesktopLaunchArgsStripsLegacySafeMode(t *testing.T) {
 	if parseDesktopLaunchArgs([]string{"--other"}).LegacySafeModeArg {
 		t.Fatal("unrelated argument must not set legacy safe-mode flag")
 	}
+	if !parseDesktopLaunchArgs([]string{"--account"}).OpenAccount || parseDesktopLaunchArgs(nil).OpenAccount {
+		t.Fatal("account page navigation must be explicitly requested")
+	}
 }
 
 func TestParseDesktopLaunchArgsRemoteWindow(t *testing.T) {

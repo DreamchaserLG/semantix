@@ -90,6 +90,7 @@ const MemorySettingsPage = lazy(() => import("./MemoryPanel").then((module) => (
 const SubagentsSettingsPage = lazy(() => import("./SubagentsPanel").then((module) => ({ default: module.SubagentsSettingsPage })));
 const DiagnosticsSettingsPage = lazy(() => import("./DiagnosticsSettingsPage").then((module) => ({ default: module.DiagnosticsSettingsPage })));
 const StorageSettingsPage = lazy(() => import("./StorageSettingsPage").then((module) => ({ default: module.StorageSettingsPage })));
+const AccountSettingsPage = lazy(() => import("./AccountSettingsPage").then((module) => ({ default: module.AccountSettingsPage })));
 const UsageStatsPanel = lazy(() => import("./UsageStatsPanel").then((module) => ({ default: module.UsageStatsPanel })));
 const QRCodeSVG = lazy(() => import("qrcode.react").then((module) => ({ default: module.QRCodeSVG })));
 
@@ -339,6 +340,7 @@ export function SettingsPanel({
               loadingSettings ? <div className="empty">{t("settings.loading")}</div> : null
             ) : (
               <>
+                {tab === "account" && <SettingsPageShell key={tab} s={s} tab={tab} busy={false} apply={apply}><Suspense fallback={lazySettingsPageFallback}><AccountSettingsPage /></Suspense></SettingsPageShell>}
                 {tab === "general" && s && <SettingsPageShell key={tab} s={s} tab={tab} busy={busy} apply={apply}><GeneralSection s={s} busy={busy} apply={apply} agentRunning={agentRunning} /></SettingsPageShell>}
                 {tab === "models" && s && <SettingsPageShell key={tab} s={s} tab={tab} busy={busy} apply={apply}><ModelsSection s={s} busy={busy} apply={apply} backgroundApply={backgroundApply} initialFocus={initialFocus} /></SettingsPageShell>}
                 {tab === "bots" && s && <SettingsPageShell key={tab} s={s} tab={tab} busy={busy} apply={apply}><BotsSection s={s} busy={busy} apply={apply} initialFocus={initialFocus} /></SettingsPageShell>}
@@ -573,6 +575,7 @@ type ModelsSectionProps = SectionProps & {
 
 function settingsTabLabel(id: SettingsTab, t: ReturnType<typeof useT>): string {
   switch (id) {
+    case "account": return t("settings.tab.account");
     case "general":
       return t("settings.tab.general");
     case "models":
@@ -614,6 +617,7 @@ function settingsTabLabel(id: SettingsTab, t: ReturnType<typeof useT>): string {
 
 function settingsTabMeta(id: SettingsTab, s: SettingsView, t: ReturnType<typeof useT>): string {
   switch (id) {
+    case "account": return t("account.meta");
     case "models":
       return settingsModelMeta(s, t);
     case "general":

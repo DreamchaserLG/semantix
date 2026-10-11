@@ -26,12 +26,12 @@ import { useT, type DictKey } from "../lib/i18n";
 import type { SettingsTab } from "../lib/types";
 
 export const SETTINGS_NAV_TABS: SettingsTab[] = [
-  "general", "models", "bots", "mcp", "remote", "skills", "subagents", "plugins", "memory",
+  "account", "general", "models", "bots", "mcp", "remote", "skills", "subagents", "plugins", "memory",
   "hooks", "diagnostics", "shortcuts", "permissions", "sandbox", "network", "appearance", "storage", "updates",
 ];
 
 const SETTINGS_TAB_GROUPS: { labelKey: DictKey; tabs: SettingsTab[] }[] = [
-  { labelKey: "settings.navGroup.preferences", tabs: ["general", "models", "bots"] },
+  { labelKey: "settings.navGroup.preferences", tabs: ["account", "general", "models", "bots"] },
   { labelKey: "settings.navGroup.connections", tabs: ["mcp", "remote"] },
   { labelKey: "settings.navGroup.capabilities", tabs: ["skills", "subagents", "plugins"] },
   { labelKey: "settings.navGroup.context", tabs: ["memory"] },
@@ -126,6 +126,7 @@ export function SettingsNavigation({
 function settingsTabIcon(id: SettingsTab): ReactNode {
   const props = { size: 17, strokeWidth: 1.8, "aria-hidden": true as const };
   switch (id) {
+    case "account": return <Users {...props} />;
     case "general": return <Settings2 {...props} />;
     case "models": return <Box {...props} />;
     case "providers": return <Cable {...props} />;

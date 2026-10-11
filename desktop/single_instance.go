@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func singleInstanceLock(app *App) *options.SingleInstanceLock {
@@ -14,8 +15,11 @@ func singleInstanceLock(app *App) *options.SingleInstanceLock {
 	}
 	return &options.SingleInstanceLock{
 		UniqueId: singleInstanceID(),
-		OnSecondInstanceLaunch: func(options.SecondInstanceData) {
+		OnSecondInstanceLaunch: func(data options.SecondInstanceData) {
 			app.secondInstanceLaunch()
+			if app.ctx != nil && parseDesktopLaunchArgs(data.Args).OpenAccount {
+				runtime.EventsEmit(app.ctx, "app:open-settings", "account")
+			}
 		},
 	}
 }

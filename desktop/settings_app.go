@@ -335,6 +335,7 @@ type SettingsView struct {
 // frontend startup. It deliberately excludes providers and credential state so
 // slow keychain/env resolution stays off the first-render path.
 type DesktopStartupSettingsView struct {
+	OpenAccount                  bool            `json:"openAccount,omitempty"`
 	Bot                          BotSettingsView `json:"bot"`
 	DesktopLanguage              string          `json:"desktopLanguage"`
 	DesktopLayoutStyle           string          `json:"desktopLayoutStyle"`
@@ -902,7 +903,10 @@ func officialProviderAddedSet(cfg *config.Config) map[string]bool {
 // DesktopStartupSettings returns startup chrome preferences without provider/key state.
 func (a *App) DesktopStartupSettings() (view DesktopStartupSettingsView) {
 	revision := a.nextConfigLoadWarningsRevision()
-	defer func() { view.ConfigWarningsRevision = revision }()
+	defer func() {
+		view.ConfigWarningsRevision = revision
+		view.OpenAccount = parseDesktopLaunchArgs(os.Args[1:]).OpenAccount
+	}()
 	// Prefer the resilient workspace load so config warnings surface on first paint.
 	if cfg, err := config.LoadForRootReadOnly(a.activeWorkspaceRoot()); err == nil {
 		view = desktopStartupSettingsFromConfig(cfg)
