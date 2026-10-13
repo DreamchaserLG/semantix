@@ -133,6 +133,7 @@ export default defineConfig({
     // larger bundles). Disabled for dev builds via the default.
     minify: "terser",
     terserOptions: {
+      maxWorkers: 1,
       compress: {
         // Keep warn/error so crash breadcrumbs still capture them; drop the noise.
         drop_console: ["log", "debug", "info", "trace"],
